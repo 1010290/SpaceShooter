@@ -20,11 +20,20 @@ public class Enemy : MonoBehaviour {
     
     [HideInInspector] public int shotChance; //probability of 'Enemy's' shooting during tha path
     [HideInInspector] public float shotTimeMin, shotTimeMax; //max and min time for shooting from the beginning of the path
+
+    //----------SCORING SYSTEM----------
+    private PointManager pointManager;
+    //--------SCORING SYSTEM ENDS-------
     #endregion
 
     private void Start()
     {
         Invoke("ActivateShooting", Random.Range(shotTimeMin, shotTimeMax));
+
+        //----------SCORING SYSTEM----------
+        //Since it is a prefab (& doesn't exist yet, it needs to find Point Manager)
+        pointManager = GameObject.Find("PointManager").GetComponent<PointManager>();
+        //--------SCORING SYSTEM ENDS-------
     }
 
     //coroutine making a shot
@@ -62,6 +71,7 @@ public class Enemy : MonoBehaviour {
     void Destruction()                           
     {        
         Instantiate(destructionVFX, transform.position, Quaternion.identity); 
+        pointManager.UpdateScore(20);
         Destroy(gameObject);
     }
 }
