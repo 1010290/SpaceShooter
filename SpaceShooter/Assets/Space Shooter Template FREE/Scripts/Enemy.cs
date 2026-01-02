@@ -22,9 +22,32 @@ public class Enemy : MonoBehaviour {
     [HideInInspector] public float shotTimeMin, shotTimeMax; //max and min time for shooting from the beginning of the path
     #endregion
 
+    //------------FOR SCORING SYSTEM-------------
+    public int scoreValue;    
+    private LevelController levelController; //this was set to private so we won't see it in inspector
+    //---------FOR SCORING SYSTEM ENDS-----------    
+
     private void Start()
     {
         Invoke("ActivateShooting", Random.Range(shotTimeMin, shotTimeMax));
+
+        //------------FOR SCORING SYSTEM-------------
+        //Game Object that holds Level Controller Script
+        GameObject levelControllerObject = GameObject.FindWithTag("LevelController"); //Finds first object in scene with tag
+        //if object was found and checked by testing reference to object
+        if(levelControllerObject != null)
+        {
+            //sets levelcontroller reference to level controller component on level controller object
+            levelController = levelControllerObject.GetComponent<LevelController>();
+        }
+        //FOR TESTING (if not found)
+        if(levelController == null)
+        {
+            Debug.Log("Cannot find 'LevelController' script");
+        }
+
+        Debug.Log("Score Value: " + scoreValue); //FOR TESTING
+        //---------FOR SCORING SYSTEM ENDS-----------  
     }
 
     //coroutine making a shot
@@ -61,6 +84,9 @@ public class Enemy : MonoBehaviour {
     //method of destroying the 'Enemy'
     void Destruction()                           
     {        
+        //------------FOR SCORING SYSTEM-------------    
+        levelController.AddScore(scoreValue);
+        //---------FOR SCORING SYSTEM ENDS-----------    
         Instantiate(destructionVFX, transform.position, Quaternion.identity); 
         Destroy(gameObject);
     }

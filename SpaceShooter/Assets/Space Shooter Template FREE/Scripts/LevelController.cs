@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 #region Serializable classes
 [System.Serializable]
@@ -29,6 +31,12 @@ public class LevelController : MonoBehaviour {
 
     Camera mainCamera;   
 
+    //------------FOR SCORING SYSTEM-------------
+    public TextMeshProUGUI scoreText;
+    [SerializeField] int score; //this was set to private so we won't see it in inspector
+
+    //----------FOR SCORING SYSTEM ENDS----------
+
     private void Start()
     {
         mainCamera = Camera.main;
@@ -39,6 +47,11 @@ public class LevelController : MonoBehaviour {
         }
         StartCoroutine(PowerupBonusCreation());
         StartCoroutine(PlanetsCreation());
+
+        //------------FOR SCORING SYSTEM------------- 
+        score = 0;
+        UpdateScore();          
+        //----------FOR SCORING SYSTEM ENDS----------
     }
     
     //Create a new wave after a delay
@@ -94,4 +107,17 @@ public class LevelController : MonoBehaviour {
             yield return new WaitForSeconds(timeBetweenPlanets);
         }
     }
+
+    //------------FOR SCORING SYSTEM-------------    
+    public void AddScore(int newScoreValue)
+    {
+        score += newScoreValue;
+        UpdateScore();
+    }
+    
+    void UpdateScore()
+    {
+        scoreText.text = "Score: " + score;
+    }
+    //----------FOR SCORING SYSTEM ENDS----------
 }
