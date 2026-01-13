@@ -19,9 +19,13 @@ public class Player : MonoBehaviour
     public ShipStats stats;
     public GameObject destructionFX;
 
-    public static Player instance; 
+    public static Player instance;
 
-    private void Awake()
+	//----------GAME OVER----------
+    public LevelController levelController;
+	//-------GAME OVER ENDS--------
+
+	private void Awake()
     {
         if (instance == null) 
             instance = this;
@@ -39,6 +43,7 @@ public class Player : MonoBehaviour
         {
             //destroys ship when health reaches zero
             Instantiate(destructionFX, transform.position, Quaternion.identity); //generating destruction visual effect and destroying the 'Player' object
+            levelController.GameOver();
             Destroy(gameObject);
         }
     }

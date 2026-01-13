@@ -27,9 +27,14 @@ public class LevelController : MonoBehaviour {
     public float planetsSpeed;
     List<GameObject> planetsList = new List<GameObject>();
 
-    Camera mainCamera;   
+    Camera mainCamera;
 
-    private void Start()
+    //----------GAME OVER----------
+    public GameOverScreen GameOverScreen;
+    public PointManager PointManager;
+	//-------GAME OVER ENDS--------
+
+	private void Start()
     {
         mainCamera = Camera.main;
         //for each element in 'enemyWaves' array creating coroutine which generates the wave
@@ -94,4 +99,11 @@ public class LevelController : MonoBehaviour {
             yield return new WaitForSeconds(timeBetweenPlanets);
         }
     }
+
+    //----------GAME OVER----------
+    public void GameOver()
+    {
+        GameOverScreen.Setup(PointManager.score);
+    }
+	//-------GAME OVER ENDS--------
 }
