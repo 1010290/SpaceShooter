@@ -4,8 +4,12 @@ using System.Collections.Generic;
 
 public class DataPersistenceManager : MonoBehaviour
 {
+
+    [Header("File Storage Config")]
+    [SerializeField] private string fileName;
     private GameData gameData;
     private List<IDataPersistence> dataPersistenceObjects;
+    private FileDataHandler dataHandler;
 
     public static DataPersistenceManager instance { get; private set; }
 
@@ -20,6 +24,7 @@ public class DataPersistenceManager : MonoBehaviour
 
     private void Start()
     {
+        this.dataHandler = new FileDataHandler(Application.persistentDataPath, fileName);
         this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadGame();
     }
@@ -31,28 +36,38 @@ public class DataPersistenceManager : MonoBehaviour
 
     public void LoadGame()
     {
+
+        //load any saved data from a file using the data handler
+        this.gameData = dataHandler.Load();
+
+        //if no data can be loaded, initialize to a new game
         if (this.gameData == null)
         {
             Debug.Log("No data was found. Initializing data to defaults.");
             NewGame();
         }
 
+        //push the loaded data to all other scripts that need it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
         {
             dataPersistenceObj.LoadData(gameData);
         }
 
-        Debug.Log("Loaded High Score = " + gameData.highScore);
+        Debug.Log("Loaded High Score = " + gameData.highScore); //TO DELETE
     }
 
     public void SaveGame()
     {
+        //pass the data to other scripts so they can update it
         foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
         {
             dataPersistenceObj.SaveData(ref gameData);
         }
 
-        Debug.Log("Saved high score = " + gameData.highScore);
+        Debug.Log("Saved high score = " + gameData.highScore); //TO DELETE
+
+        //save that data to a file using the data handler
+        dataHandler.Save(gameData);
     }
 
     private void OnApplicationQuit()
