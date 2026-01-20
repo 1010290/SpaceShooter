@@ -1,7 +1,7 @@
 using UnityEngine;
 using TMPro;
 
-public class PointManager : MonoBehaviour
+public class PointManager : MonoBehaviour, IDataPersistence
 {
     public int score;
     //Reference to which text shows the score
@@ -12,6 +12,16 @@ public class PointManager : MonoBehaviour
     {
         score = 0;
         scoreText.text  = "Score: " + score;
+    }
+
+    public void LoadData(GameData data)
+    {
+        this.score = data.highScore;
+    }
+
+    public void SaveData(ref GameData data)
+    {
+        data.highScore = this.score;
     }
 
     public void UpdateScore(int points)

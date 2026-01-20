@@ -1,8 +1,11 @@
 using UnityEngine;
+using System.Linq;
+using System.Collections.Generic;
 
 public class DataPersistenceManager : MonoBehaviour
 {
     private GameData gameData;
+    private List<IDataPersistence> dataPersistenceObjects;
 
     public static DataPersistenceManager instance { get; private set; }
 
@@ -17,6 +20,7 @@ public class DataPersistenceManager : MonoBehaviour
 
     private void Start()
     {
+        this.dataPersistenceObjects = FindAllDataPersistenceObjects();
         LoadGame();
     }
 
@@ -32,15 +36,34 @@ public class DataPersistenceManager : MonoBehaviour
             Debug.Log("No data was found. Initializing data to defaults.");
             NewGame();
         }
+
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
+        {
+            dataPersistenceObj.LoadData(gameData);
+        }
+
+        Debug.Log("Loaded High Score = " + gameData.highScore);
     }
 
     public void SaveGame()
     {
+        foreach (IDataPersistence dataPersistenceObj in dataPersistenceObjects)
+        {
+            dataPersistenceObj.SaveData(ref gameData);
+        }
 
+        Debug.Log("Saved high score = " + gameData.highScore);
     }
 
     private void OnApplicationQuit()
     {
         SaveGame();
+    }
+
+    private List<IDataPersistence> FindAllDataPersistenceObjects()
+    {
+        IEnumerable<IDataPersistence> dataPersistenceObjects = FindObjectsOfType<MonoBehaviour>().OfType<IDataPersistence>();
+
+        return new List<IDataPersistence>(dataPersistenceObjects);
     }
 }

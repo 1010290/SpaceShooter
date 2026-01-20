@@ -33,7 +33,6 @@ public class Player : MonoBehaviour
 
     private void Start()
     {
-        Debug.Log(stats.maxHealth); //TESTING
         stats.currentHealth = stats.maxHealth;
     }
 
